@@ -1,157 +1,168 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CreateRequest = () => {
   const navigate = useNavigate();
 
-  // State for form fields
-  const [title, setTitle] = useState('Need review on my JavaScript quiz app before submission');
+  // States
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [tags, setTags] = useState('JavaScript, Debugging, Review');
+  const [tags, setTags] = useState('');
   const [category, setCategory] = useState('Web Development');
-  const [urgency, setUrgency] = useState('High');
+  const [urgency, setUrgency] = useState('Low');
 
-  // Handle form submission
-  const handlePublish = (e) => {
-    e.preventDefault();
+  // --- AI TAG SUGGESTION LOGIC ---
+  const suggestTagsWithAI = () => {
+    if (!description) {
+      alert("Jani, pehle description to likho tabhi AI tags bata payega!");
+      return;
+    }
+
+    // Smart Keywords for Hackathon
+    const keywords = ["react", "node", "express", "mongodb", "javascript", "tailwind", "css", "bug", "api", "auth", "frontend", "backend", "deployment", "firebase"];
+    const words = description.toLowerCase().split(/\W+/);
     
+    // Filter matches
+    const foundTags = keywords.filter(k => words.includes(k));
+
+    if (foundTags.length > 0) {
+      setTags(foundTags.join(', '));
+      // User ko feel dilao ke AI ne kaam kia hai
+      alert("AI Magic: Tags found and applied! ✨");
+    } else {
+      alert("AI couldn't find specific tech tags. Try adding tech names like 'React' or 'Node' in description.");
+    }
+  };
+
+  const handlePublish = async (e) => {
+    e.preventDefault();
+
     const requestData = {
-      title,
-      description,
-      tags,
+      title: title.trim(),
+      description: description.trim(),
+      tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
       category,
       urgency,
-      createdAt: new Date().toISOString()
+      author: "Umer Farooq", 
+      location: "Karachi"
     };
-    
-    console.log('New Request Data:', requestData);
-    
-    // Yahan aage ja kar hum Backend API call lagayenge
-    // filhal ke liye explore page pe bhej dete hain
-    navigate('/explore');
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/requests', requestData);
+      console.log('Success:', response.data);
+      alert('Mubarak ho jani! Request posted to MongoDB! 🚀');
+      navigate('/explore');
+    } catch (error) {
+      console.error('Error details:', error.response?.data || error.message);
+      const serverError = error.response?.data?.error || "Server Terminal check karo jani!";
+      alert('Error: ' + serverError);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#f4ece1] font-sans p-10 flex flex-col items-center">
-      <nav className="max-w-5xl w-full flex justify-between items-center mb-10 px-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-[#008080] text-white h-10 w-10 flex items-center justify-center rounded-lg font-bold text-xl">H</div>
-          <span className="font-bold text-lg">HelpHub AI</span>
+    <div className="min-h-screen bg-[#f4ece1] p-6 md:p-10 flex flex-col items-center">
+      <div className="max-w-4xl w-full bg-white p-8 md:p-12 rounded-[40px] shadow-2xl border border-gray-100">
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl md:text-5xl font-black text-[#222a28] mb-4">Post a Help Request</h1>
+          <p className="text-gray-400 font-medium italic">"Community help is just a click away"</p>
         </div>
-        <div className="flex gap-6 text-sm font-medium text-gray-500">
-          <span className="cursor-pointer hover:text-black" onClick={() => navigate('/explore')}>Dashboard</span>
-          <span className="cursor-pointer hover:text-black" onClick={() => navigate('/explore')}>Explore</span>
-          <span className="bg-[#e0f0eb] text-[#008080] px-4 py-2 rounded-full">Create Request</span>
-        </div>
-      </nav>
+        
+        <form onSubmit={handlePublish} className="space-y-8">
+          {/* Title Field */}
+          <div className="group">
+            <label className="block font-bold text-[#222a28] mb-2 ml-2 transition-colors group-focus-within:text-[#008080]">Project Title</label>
+            <input 
+              type="text" 
+              value={title} 
+              onChange={(e) => setTitle(e.target.value)} 
+              className="w-full p-5 border-2 border-gray-100 rounded-3xl outline-none focus:border-[#008080] transition-all bg-gray-50 focus:bg-white" 
+              placeholder="E.g., MongoDB Connection Issue in Node.js"
+              required 
+            />
+          </div>
 
-      <div className="max-w-5xl w-full">
-        <div className="bg-[#222a28] text-white p-12 rounded-[40px] mb-8">
-          <span className="uppercase text-xs font-bold tracking-widest text-gray-400 block mb-4">Create Request</span>
-          <h1 className="text-5xl font-bold mb-4 leading-tight">Turn a rough problem into a clear help request.</h1>
-          <p className="text-gray-400">Use built-in AI suggestions for category, urgency, tags, and a stronger description rewrite.</p>
-        </div>
+          {/* Description Field */}
+          <div>
+            <label className="block font-bold text-[#222a28] mb-2 ml-2">Description</label>
+            <textarea 
+              value={description} 
+              onChange={(e) => setDescription(e.target.value)} 
+              className="w-full p-5 border-2 border-gray-100 rounded-3xl outline-none h-40 resize-none focus:border-[#008080] transition-all bg-gray-50 focus:bg-white" 
+              placeholder="Describe your problem in detail... AI will read this to suggest tags!"
+              required 
+            />
+          </div>
 
-        <div className="grid grid-cols-3 gap-8">
-          <div className="col-span-2 bg-[#fdfaf6] p-10 rounded-[40px]">
-            <form className="space-y-6" onSubmit={handlePublish}>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Title</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Tags Field with AI Button */}
+            <div>
+              <label className="block font-bold text-[#222a28] mb-2 ml-2">Tags (comma separated)</label>
+              <div className="relative">
                 <input 
                   type="text" 
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none" 
-                  required
+                  value={tags} 
+                  onChange={(e) => setTags(e.target.value)} 
+                  className="w-full p-5 pr-28 border-2 border-gray-100 rounded-3xl outline-none focus:border-[#008080] bg-gray-50 focus:bg-white" 
+                  placeholder="React, CSS, etc." 
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
-                <textarea 
-                  rows="4" 
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Explain the challenge, your current progress, deadline, and what kind of help would be useful." 
-                  className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none resize-none"
-                  required
-                ></textarea>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Tags</label>
-                  <input 
-                    type="text" 
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                    className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none" 
-                  />
-                </div>
-                <div className="flex-1">
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
-                  <select 
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none"
-                  >
-                    <option value="Web Development">Web Development</option>
-                    <option value="Design">Design</option>
-                    <option value="Career">Career</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="w-1/2 pr-2">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Urgency</label>
-                <select 
-                  value={urgency}
-                  onChange={(e) => setUrgency(e.target.value)}
-                  className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none"
+                <button 
+                  type="button"
+                  onClick={suggestTagsWithAI}
+                  className="absolute right-3 top-3 bottom-3 bg-[#222a28] text-white px-4 rounded-2xl text-[10px] font-black uppercase hover:bg-black transition-all"
                 >
-                  <option value="Low">Low</option>
-                  <option value="Medium">Medium</option>
-                  <option value="High">High</option>
-                </select>
-              </div>
-
-              <div className="flex gap-4 pt-4">
-                <button type="button" className="bg-white border border-gray-200 text-black px-6 py-3 rounded-full font-bold hover:bg-gray-50">
-                  Apply AI suggestions
+                  AI Suggest
                 </button>
-                <button type="submit" className="bg-[#008080] text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-[#008080]/20 hover:bg-[#006666]">
-                  Publish request
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="bg-[#fdfaf6] p-10 rounded-[40px]">
-            <span className="text-xs font-bold text-[#008080] uppercase tracking-widest block mb-4">AI Assistant</span>
-            <h2 className="text-3xl font-bold mb-8 leading-tight">Smart request guidance</h2>
-
-            <div className="space-y-6 text-sm">
-              <div className="flex justify-between border-b border-gray-200 pb-4">
-                <span className="text-gray-500">Suggested category</span>
-                <span className="font-bold">Community</span>
-              </div>
-              <div className="flex justify-between border-b border-gray-200 pb-4">
-                <span className="text-gray-500">Detected urgency</span>
-                <span className="font-bold">Low</span>
-              </div>
-              <div className="flex justify-between border-b border-gray-200 pb-4 gap-4">
-                <span className="text-gray-500 shrink-0">Suggested tags</span>
-                <span className="font-bold text-right">Add more detail for smarter tags</span>
-              </div>
-              <div className="flex justify-between gap-4">
-                <span className="text-gray-500 shrink-0">Rewrite suggestion</span>
-                <span className="font-bold text-right">Start describing the challenge to generate a stronger version.</span>
               </div>
             </div>
+
+            {/* Category Selection */}
+            <div>
+              <label className="block font-bold text-[#222a28] mb-2 ml-2">Category</label>
+              <select 
+                value={category} 
+                onChange={(e) => setCategory(e.target.value)} 
+                className="w-full p-5 border-2 border-gray-100 rounded-3xl outline-none bg-gray-50 focus:bg-white appearance-none cursor-pointer"
+              >
+                <option value="Web Development">Web Development</option>
+                <option value="Design">Design</option>
+                <option value="Career">Career</option>
+                <option value="Mobile App">Mobile App</option>
+              </select>
+            </div>
           </div>
-        </div>
+
+          {/* Urgency Selection */}
+          <div className="w-full md:w-1/2">
+            <label className="block font-bold text-[#222a28] mb-2 ml-2">Urgency Level</label>
+            <div className="flex gap-4">
+              {['Low', 'Medium', 'High'].map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => setUrgency(level)}
+                  className={`flex-1 py-3 rounded-2xl font-bold text-sm transition-all border-2 ${
+                    urgency === level 
+                    ? 'bg-[#008080] border-[#008080] text-white shadow-lg' 
+                    : 'bg-white border-gray-100 text-gray-400 hover:border-[#008080]'
+                  }`}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            className="bg-[#008080] text-white px-8 py-5 rounded-[25px] font-black text-xl w-full shadow-[0_10px_30px_rgba(0,128,128,0.3)] hover:bg-[#006666] transition-all transform hover:-translate-y-1 active:scale-95 mt-4"
+          >
+            PUBLISH REQUEST TO ATLAS 🚀
+          </button>
+        </form>
       </div>
     </div>
   );
 };
+
 export default CreateRequest;

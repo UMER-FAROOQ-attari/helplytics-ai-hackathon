@@ -9,10 +9,12 @@ import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import Leaderboard from './pages/Leaderboard';
 import Notifications from './pages/Notifications';
-
-function App() {
+import RequestDetails from './pages/RequestDetails';
+import Navbar from './components/Navbar'; 
+ function App() {
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<AuthPage />} />
         <Route path="/landing" element={<LandingPage />} />
@@ -24,6 +26,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/notifications" element={<Notifications />} />
+        <Route path="/request/:id" element={<RequestDetails />} />
       </Routes>
     </Router>
   );
