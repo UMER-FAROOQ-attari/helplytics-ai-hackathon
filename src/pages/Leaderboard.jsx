@@ -1,8 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Leaderboard = () => {
   const navigate = useNavigate();
+
+  const [leaders, setLeaders] = useState([
+    {
+      id: 1,
+      rank: 2,
+      name: 'Hassan Ali',
+      initials: 'HA',
+      avatarColor: 'bg-[#222a28]',
+      skills: 'JavaScript, React, Git/GitHub',
+      score: 88,
+      contributions: 24,
+      badges: 'Code Rescuer • Bug Hunter',
+      progress: [{ color: 'bg-[#008080]', width: '88%' }]
+    },
+    {
+      id: 2,
+      rank: 3,
+      name: 'Sara Noor',
+      initials: 'SN',
+      avatarColor: 'bg-orange-400',
+      skills: 'Python, Data Analysis',
+      score: 74,
+      contributions: 11,
+      badges: 'Community Voice',
+      progress: [{ color: 'bg-orange-400', width: '74%' }, { color: 'bg-[#008080]', width: '10%' }]
+    }
+  ]);
 
   return (
     <div className="min-h-screen bg-[#f4ece1] font-sans p-10 flex flex-col items-center">
@@ -31,33 +58,21 @@ const Leaderboard = () => {
             <h2 className="text-3xl font-bold mb-8">Rankings</h2>
 
             <div className="space-y-4">
-              <div className="bg-white p-6 rounded-3xl flex items-center justify-between shadow-sm border border-gray-50">
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#222a28] text-white h-12 w-12 rounded-full flex items-center justify-center font-bold">HA</div>
-                  <div>
-                    <p className="font-bold">#2 Hassan Ali</p>
-                    <p className="text-xs text-gray-500 mt-1">JavaScript, React, Git/GitHub</p>
+              {leaders.map((leader) => (
+                <div key={leader.id} className="bg-white p-6 rounded-3xl flex items-center justify-between shadow-sm border border-gray-50">
+                  <div className="flex items-center gap-4">
+                    <div className={`${leader.avatarColor} text-white h-12 w-12 rounded-full flex items-center justify-center font-bold`}>{leader.initials}</div>
+                    <div>
+                      <p className="font-bold">#{leader.rank} {leader.name}</p>
+                      <p className="text-xs text-gray-500 mt-1">{leader.skills}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold">{leader.score}%</p>
+                    <p className="text-xs text-gray-500 mt-1">{leader.contributions} contributions</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-bold">88%</p>
-                  <p className="text-xs text-gray-500 mt-1">24 contributions</p>
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-3xl flex items-center justify-between shadow-sm border border-gray-50">
-                <div className="flex items-center gap-4">
-                  <div className="bg-orange-400 text-white h-12 w-12 rounded-full flex items-center justify-center font-bold">SN</div>
-                  <div>
-                    <p className="font-bold">#3 Sara Noor</p>
-                    <p className="text-xs text-gray-500 mt-1">Python, Data Analysis</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold">74%</p>
-                  <p className="text-xs text-gray-500 mt-1">11 contributions</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -66,22 +81,17 @@ const Leaderboard = () => {
             <h2 className="text-3xl font-bold mb-8">Trust and achievement</h2>
 
             <div className="space-y-6">
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
-                <p className="font-bold mb-2">Hassan Ali</p>
-                <p className="text-xs text-gray-500 mb-4">Code Rescuer • Bug Hunter</p>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#008080] w-[88%]"></div>
+              {leaders.map((leader) => (
+                <div key={`badge-${leader.id}`} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
+                  <p className="font-bold mb-2">{leader.name}</p>
+                  <p className="text-xs text-gray-500 mb-4">{leader.badges}</p>
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden flex">
+                    {leader.progress.map((bar, index) => (
+                      <div key={index} className={`h-full ${bar.color}`} style={{ width: bar.width }}></div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-50">
-                <p className="font-bold mb-2">Sara Noor</p>
-                <p className="text-xs text-gray-500 mb-4">Community Voice</p>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden flex">
-                  <div className="h-full bg-orange-400 w-[74%]"></div>
-                  <div className="h-full bg-[#008080] w-[10%]"></div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

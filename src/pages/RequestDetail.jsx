@@ -1,6 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const RequestDetail = () => {
+  const navigate = useNavigate();
+
+  const [isSolved, setIsSolved] = useState(true);
+  const [helpers, setHelpers] = useState([
+    {
+      id: 1,
+      initials: 'AK',
+      name: 'Ayesha Khan',
+      skills: 'Figma, UI/UX, HTML/CSS',
+      trust: '100%',
+      color: 'bg-orange-500'
+    },
+    {
+      id: 2,
+      initials: 'HA',
+      name: 'Hassan Ali',
+      skills: 'JavaScript, React, Git/GitHub',
+      trust: '88%',
+      color: 'bg-orange-400'
+    }
+  ]);
+
+  const handleOfferHelp = () => {
+    const newHelper = {
+      id: Date.now(),
+      initials: 'UF',
+      name: 'Umer Farooq',
+      skills: 'MERN Stack, React, Tailwind',
+      trust: 'New',
+      color: 'bg-[#008080]'
+    };
+    setHelpers([...helpers, newHelper]);
+  };
+
+  const toggleSolved = () => {
+    setIsSolved(!isSolved);
+  };
+
   return (
     <div className="min-h-screen bg-[#f4ece1] font-sans p-10 flex justify-center">
       <div className="max-w-5xl w-full">
@@ -10,7 +49,9 @@ const RequestDetail = () => {
           <div className="flex gap-2 mb-6">
             <span className="bg-white/10 text-[#008080] px-3 py-1 rounded-full text-xs font-bold">Career</span>
             <span className="bg-white/10 text-[#008080] px-3 py-1 rounded-full text-xs font-bold">Low</span>
-            <span className="bg-green-900 text-green-400 px-3 py-1 rounded-full text-xs font-bold">Solved</span>
+            <span className={`px-3 py-1 rounded-full text-xs font-bold ${isSolved ? 'bg-green-900 text-green-400' : 'bg-orange-900 text-orange-400'}`}>
+              {isSolved ? 'Solved' : 'Open'}
+            </span>
           </div>
           <h1 className="text-5xl font-bold mb-4 leading-tight">Need mock interview support for<br/>internship applications</h1>
           <p className="text-gray-400">Applying to frontend internships and need someone to practice behavioral and technical interview questions with me.</p>
@@ -37,8 +78,12 @@ const RequestDetail = () => {
             <div className="bg-white p-8 rounded-[32px]">
               <span className="text-xs font-bold text-[#008080] uppercase tracking-widest mb-4 block">Actions</span>
               <div className="flex gap-4">
-                <button className="bg-[#008080] text-white px-8 py-3 rounded-full font-bold">I can help</button>
-                <button className="bg-white border border-gray-200 text-black px-8 py-3 rounded-full font-bold">Mark as solved</button>
+                <button onClick={handleOfferHelp} className="bg-[#008080] text-white px-8 py-3 rounded-full font-bold hover:bg-[#006666] transition-all">
+                  I can help
+                </button>
+                <button onClick={toggleSolved} className="bg-white border border-gray-200 text-black px-8 py-3 rounded-full font-bold hover:bg-gray-50 transition-all">
+                  {isSolved ? 'Reopen request' : 'Mark as solved'}
+                </button>
               </div>
             </div>
           </div>
@@ -47,9 +92,9 @@ const RequestDetail = () => {
             <div className="bg-white p-8 rounded-[32px]">
               <span className="text-xs font-bold text-[#008080] uppercase tracking-widest mb-4 block">Requester</span>
               <div className="flex justify-between items-center text-sm font-bold text-gray-500">
-                <span>Dashboard</span>
-                <span>Explore</span>
-                <span>Messages</span>
+                <span className="cursor-pointer hover:text-black" onClick={() => navigate('/explore')}>Dashboard</span>
+                <span className="cursor-pointer hover:text-black" onClick={() => navigate('/explore')}>Explore</span>
+                <span className="cursor-pointer hover:text-black" onClick={() => navigate('/messages')}>Messages</span>
               </div>
             </div>
 
@@ -58,27 +103,20 @@ const RequestDetail = () => {
               <h3 className="font-bold mb-6">People ready to support</h3>
               
               <div className="space-y-4">
-                <div className="border border-gray-100 p-4 rounded-2xl flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-orange-500 text-white h-10 w-10 rounded-full flex items-center justify-center font-bold text-sm">AK</div>
-                    <div>
-                      <p className="font-bold text-sm">Ayesha Khan</p>
-                      <p className="text-xs text-gray-400">Figma, UI/UX, HTML/CSS</p>
+                {helpers.map((helper) => (
+                  <div key={helper.id} className="border border-gray-100 p-4 rounded-2xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`${helper.color} text-white h-10 w-10 rounded-full flex items-center justify-center font-bold text-sm`}>
+                        {helper.initials}
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm">{helper.name}</p>
+                        <p className="text-xs text-gray-400">{helper.skills}</p>
+                      </div>
                     </div>
+                    <span className="bg-[#e0f0eb] text-[#008080] px-3 py-1 rounded-full text-xs font-bold">Trust {helper.trust}</span>
                   </div>
-                  <span className="bg-[#e0f0eb] text-[#008080] px-3 py-1 rounded-full text-xs font-bold">Trust 100%</span>
-                </div>
-
-                <div className="border border-gray-100 p-4 rounded-2xl flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-orange-400 text-white h-10 w-10 rounded-full flex items-center justify-center font-bold text-sm">HA</div>
-                    <div>
-                      <p className="font-bold text-sm">Hassan Ali</p>
-                      <p className="text-xs text-gray-400">JavaScript, React, Git/GitHub</p>
-                    </div>
-                  </div>
-                  <span className="bg-[#e0f0eb] text-[#008080] px-3 py-1 rounded-full text-xs font-bold">Trust 88%</span>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -88,4 +126,5 @@ const RequestDetail = () => {
     </div>
   );
 };
+
 export default RequestDetail;

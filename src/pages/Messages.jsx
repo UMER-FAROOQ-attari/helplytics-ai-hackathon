@@ -1,8 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Messages = () => {
   const navigate = useNavigate();
+
+  const [messagesList, setMessagesList] = useState([
+    {
+      id: 1,
+      sender: 'Ayesha Khan',
+      receiver: 'Sara Noor',
+      text: 'I checked your portfolio request. Share the breakpoint screenshots and I can suggest fixes.',
+      time: '09:45',
+      ampm: 'AM'
+    },
+    {
+      id: 2,
+      sender: 'Hassan Ali',
+      receiver: 'Ayesha Khan',
+      text: 'Your event poster concept is solid. I would tighten the CTA and reduce the background texture.',
+      time: '11:10',
+      ampm: 'AM'
+    }
+  ]);
+
+  const [toUser, setToUser] = useState('Ayesha Khan');
+  const [messageText, setMessageText] = useState('');
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!messageText.trim()) return;
+
+    const date = new Date();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    const timeStr = hours + ':' + minutes;
+
+    const newMessage = {
+      id: Date.now(),
+      sender: 'Umer Farooq',
+      receiver: toUser,
+      text: messageText,
+      time: timeStr,
+      ampm: ampm
+    };
+
+    setMessagesList([newMessage, ...messagesList]);
+    setMessageText('');
+  };
 
   return (
     <div className="min-h-screen bg-[#f4ece1] font-sans p-10 flex flex-col items-center">
@@ -31,27 +79,18 @@ const Messages = () => {
             <h2 className="text-3xl font-bold mb-8">Recent messages</h2>
 
             <div className="space-y-4">
-              <div className="border border-gray-100 p-6 rounded-3xl flex justify-between items-center">
-                <div>
-                  <p className="font-bold text-sm mb-2">Ayesha Khan → Sara Noor</p>
-                  <p className="text-gray-500 text-sm">I checked your portfolio request. Share the breakpoint screenshots and I can suggest fixes.</p>
+              {messagesList.map((msg) => (
+                <div key={msg.id} className="border border-gray-100 p-6 rounded-3xl flex justify-between items-center">
+                  <div>
+                    <p className="font-bold text-sm mb-2">{msg.sender} → {msg.receiver}</p>
+                    <p className="text-gray-500 text-sm">{msg.text}</p>
+                  </div>
+                  <div className="bg-[#e0f0eb] text-[#008080] h-12 w-12 rounded-full flex flex-col items-center justify-center text-[10px] font-bold shrink-0">
+                    <span>{msg.time}</span>
+                    <span>{msg.ampm}</span>
+                  </div>
                 </div>
-                <div className="bg-[#e0f0eb] text-[#008080] h-12 w-12 rounded-full flex flex-col items-center justify-center text-[10px] font-bold shrink-0">
-                  <span>09:45</span>
-                  <span>AM</span>
-                </div>
-              </div>
-
-              <div className="border border-gray-100 p-6 rounded-3xl flex justify-between items-center">
-                <div>
-                  <p className="font-bold text-sm mb-2">Hassan Ali → Ayesha Khan</p>
-                  <p className="text-gray-500 text-sm">Your event poster concept is solid. I would tighten the CTA and reduce the background texture.</p>
-                </div>
-                <div className="bg-[#e0f0eb] text-[#008080] h-12 w-12 rounded-full flex flex-col items-center justify-center text-[10px] font-bold shrink-0">
-                  <span>11:10</span>
-                  <span>AM</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -59,24 +98,32 @@ const Messages = () => {
             <span className="text-xs font-bold text-[#008080] uppercase tracking-widest block mb-6">Send Message</span>
             <h2 className="text-3xl font-bold mb-8">Start a conversation</h2>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSendMessage}>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">To</label>
-                <select className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none">
-                  <option>Ayesha Khan</option>
-                  <option>Hassan Ali</option>
+                <select 
+                  value={toUser}
+                  onChange={(e) => setToUser(e.target.value)}
+                  className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none"
+                >
+                  <option value="Ayesha Khan">Ayesha Khan</option>
+                  <option value="Hassan Ali">Hassan Ali</option>
+                  <option value="Sara Noor">Sara Noor</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Message</label>
                 <textarea 
+                  value={messageText}
+                  onChange={(e) => setMessageText(e.target.value)}
                   className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none h-32 resize-none" 
                   placeholder="Share support details, ask for files, or suggest next steps."
+                  required
                 ></textarea>
               </div>
 
-              <button type="button" className="w-full bg-[#008080] text-white py-4 rounded-2xl font-bold hover:bg-[#006666] transition-all">
+              <button type="submit" className="w-full bg-[#008080] text-white py-4 rounded-2xl font-bold hover:bg-[#006666] transition-all">
                 Send
               </button>
             </form>

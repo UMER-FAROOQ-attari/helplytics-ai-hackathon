@@ -1,8 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CreateRequest = () => {
   const navigate = useNavigate();
+
+  // State for form fields
+  const [title, setTitle] = useState('Need review on my JavaScript quiz app before submission');
+  const [description, setDescription] = useState('');
+  const [tags, setTags] = useState('JavaScript, Debugging, Review');
+  const [category, setCategory] = useState('Web Development');
+  const [urgency, setUrgency] = useState('High');
+
+  // Handle form submission
+  const handlePublish = (e) => {
+    e.preventDefault();
+    
+    const requestData = {
+      title,
+      description,
+      tags,
+      category,
+      urgency,
+      createdAt: new Date().toISOString()
+    };
+    
+    console.log('New Request Data:', requestData);
+    
+    // Yahan aage ja kar hum Backend API call lagayenge
+    // filhal ke liye explore page pe bhej dete hain
+    navigate('/explore');
+  };
 
   return (
     <div className="min-h-screen bg-[#f4ece1] font-sans p-10 flex flex-col items-center">
@@ -27,40 +54,74 @@ const CreateRequest = () => {
 
         <div className="grid grid-cols-3 gap-8">
           <div className="col-span-2 bg-[#fdfaf6] p-10 rounded-[40px]">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handlePublish}>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Title</label>
-                <input type="text" defaultValue="Need review on my JavaScript quiz app before submission" className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none" />
+                <input 
+                  type="text" 
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none" 
+                  required
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
-                <textarea rows="4" placeholder="Explain the challenge, your current progress, deadline, and what kind of help would be useful." className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none resize-none"></textarea>
+                <textarea 
+                  rows="4" 
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Explain the challenge, your current progress, deadline, and what kind of help would be useful." 
+                  className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none resize-none"
+                  required
+                ></textarea>
               </div>
 
               <div className="flex gap-4">
                 <div className="flex-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">Tags</label>
-                  <input type="text" defaultValue="JavaScript, Debugging, Review" className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none" />
+                  <input 
+                    type="text" 
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                    className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none" 
+                  />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
-                  <select className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none">
-                    <option>Web Development</option>
+                  <select 
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none"
+                  >
+                    <option value="Web Development">Web Development</option>
+                    <option value="Design">Design</option>
+                    <option value="Career">Career</option>
                   </select>
                 </div>
               </div>
 
               <div className="w-1/2 pr-2">
                 <label className="block text-sm font-bold text-gray-700 mb-2">Urgency</label>
-                <select className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none">
-                  <option>High</option>
+                <select 
+                  value={urgency}
+                  onChange={(e) => setUrgency(e.target.value)}
+                  className="w-full p-4 border border-gray-100 rounded-2xl bg-white outline-none"
+                >
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
                 </select>
               </div>
 
               <div className="flex gap-4 pt-4">
-                <button type="button" className="bg-white border border-gray-200 text-black px-6 py-3 rounded-full font-bold">Apply AI suggestions</button>
-                <button type="button" onClick={() => navigate('/explore')} className="bg-[#008080] text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-[#008080]/20 hover:bg-[#006666]">Publish request</button>
+                <button type="button" className="bg-white border border-gray-200 text-black px-6 py-3 rounded-full font-bold hover:bg-gray-50">
+                  Apply AI suggestions
+                </button>
+                <button type="submit" className="bg-[#008080] text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-[#008080]/20 hover:bg-[#006666]">
+                  Publish request
+                </button>
               </div>
             </form>
           </div>

@@ -12,14 +12,14 @@ const LandingPage = () => {
           <span className="font-bold text-lg">HelpHub AI</span>
         </div>
         <div className="flex gap-8 text-gray-600 font-medium">
-          <span className="text-[#008080] bg-[#008080]/10 px-4 py-1 rounded-full">Home</span>
+          <span className="text-[#008080] bg-[#008080]/10 px-4 py-1 rounded-full cursor-pointer" onClick={() => navigate('/landing')}>Home</span>
           <span className="hover:text-black cursor-pointer" onClick={() => navigate('/explore')}>Explore</span>
-          <span className="hover:text-black cursor-pointer">Leaderboard</span>
-          <span className="hover:text-black cursor-pointer">AI Center</span>
+          <span className="hover:text-black cursor-pointer" onClick={() => navigate('/leaderboard')}>Leaderboard</span>
+          <span className="hover:text-black cursor-pointer" onClick={() => navigate('/ai-center')}>AI Center</span>
         </div>
         <div className="flex gap-4">
           <span className="font-medium text-gray-600 mt-2">Live community signals</span>
-          <button className="bg-[#008080] text-white px-6 py-2 rounded-full font-medium">Join the platform</button>
+          <button onClick={() => navigate('/')} className="bg-[#008080] text-white px-6 py-2 rounded-full font-medium">Join the platform</button>
         </div>
       </nav>
 
@@ -31,8 +31,8 @@ const LandingPage = () => {
             HelpHub AI is a community-powered support network for students, mentors, creators, and builders. Ask for help, offer help, track impact, and let AI surface smarter matches across the platform.
           </p>
           <div className="flex gap-4 mb-12">
-            <button className="bg-[#008080] text-white px-8 py-3 rounded-full font-bold">Open product demo</button>
-            <button className="bg-white text-black px-8 py-3 rounded-full font-bold border border-gray-200">Post a request</button>
+            <button onClick={() => navigate('/explore')} className="bg-[#008080] text-white px-8 py-3 rounded-full font-bold">Open product demo</button>
+            <button onClick={() => navigate('/create-request')} className="bg-white text-black px-8 py-3 rounded-full font-bold border border-gray-200">Post a request</button>
           </div>
           <div className="flex gap-6">
             <div className="bg-white p-6 rounded-3xl w-40">

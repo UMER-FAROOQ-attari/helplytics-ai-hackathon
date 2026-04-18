@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const AuthPage = () => {
   const navigate = useNavigate();
+  
+  // State for form inputs
+  const [userName, setUserName] = useState('Ayesha Khan');
+  const [userRole, setUserRole] = useState('Both');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault();
+    
+    // Saving to LocalStorage (as required in PDF)
+    const userData = {
+      name: userName,
+      role: userRole,
+      email: email,
+      isLoggedIn: true
+    };
+    
+    localStorage.setItem('helplytics_user', JSON.stringify(userData));
+    
+    // Navigate to dashboard/landing after saving
     navigate('/landing'); 
   };
 
@@ -55,29 +73,52 @@ const AuthPage = () => {
             <form className="space-y-6" onSubmit={handleLogin}>
               <div>
                 <label className="block text-sm font-bold text-gray-600 mb-2">Select demo user</label>
-                <select className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl appearance-none outline-none">
-                  <option>Ayesha Khan</option>
-                  <option>Umer Farooq</option>
+                <select 
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl appearance-none outline-none"
+                >
+                  <option value="Ayesha Khan">Ayesha Khan</option>
+                  <option value="Umer Farooq">Umer Farooq</option>
+                  <option value="Hassan Ali">Hassan Ali</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-600 mb-2">Role selection</label>
-                <select className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl appearance-none outline-none">
-                  <option>Both</option>
-                  <option>Need Help</option>
-                  <option>Can Help</option>
+                <select 
+                  value={userRole}
+                  onChange={(e) => setUserRole(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl appearance-none outline-none"
+                >
+                  <option value="Both">Both</option>
+                  <option value="Need Help">Need Help</option>
+                  <option value="Can Help">Can Help</option>
                 </select>
               </div>
 
               <div className="flex gap-4">
                 <div className="flex-1">
                   <label className="block text-sm font-bold text-gray-600 mb-2">Email</label>
-                  <input type="email" required placeholder="community@helphub.ai" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none" />
+                  <input 
+                    type="email" 
+                    required 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="community@helphub.ai" 
+                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none" 
+                  />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-bold text-gray-600 mb-2">Password</label>
-                  <input type="password" required placeholder="••••••••" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none" />
+                  <input 
+                    type="password" 
+                    required 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••" 
+                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none" 
+                  />
                 </div>
               </div>
 
