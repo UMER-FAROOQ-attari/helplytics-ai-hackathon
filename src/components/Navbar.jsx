@@ -6,13 +6,16 @@ const Navbar = () => {
   const location = useLocation();
   const [user, setUser] = useState(null);
 
-  // چیک کریں کہ کوئی لاگ ان ہے یا نہیں
   useEffect(() => {
     const savedUser = localStorage.getItem('helplytics_user');
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error("User data parsing error", e);
+      }
     }
-  }, [location]); // جب بھی راستہ بدلے، دوبارہ چیک کرے
+  }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem('helplytics_user');
@@ -21,39 +24,42 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-[#222a28] text-white py-5 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50 shadow-2xl">
-      <Link to="/landing" className="flex items-center gap-2 group">
-        <div className="bg-[#008080] p-2 rounded-lg group-hover:rotate-12 transition-transform">
-          <span className="text-xl font-black italic text-white leading-none">H</span>
+    <nav className="flex justify-between items-center py-4 px-12 bg-transparent sticky top-0 z-50">
+      <Link to="/landing" className="flex items-center gap-2 no-underline text-black">
+        <div className="bg-[#0d9488] text-white w-9 h-9 flex items-center justify-center rounded-lg font-bold">
+          H
         </div>
-        <span className="text-2xl font-black tracking-tighter">
-          HelpHub <span className="text-[#008080]">AI</span>
-        </span>
+        <span className="font-bold text-lg tracking-tight">HelpHub AI</span>
       </Link>
-      
-      <div className="flex items-center gap-6 md:gap-10">
-        <div className="hidden md:flex gap-8 font-bold text-[10px] uppercase tracking-[0.2em] text-gray-400">
-          <Link to="/explore" className="hover:text-[#008080] transition-colors">Explore</Link>
-          <Link to="/create-request" className="hover:text-[#008080] transition-colors">Post Help</Link>
+
+      <div className="flex items-center gap-8">
+        <div className="hidden md:flex gap-6">
+          <Link to="/landing" className="text-gray-600 no-underline text-sm font-medium hover:text-[#0d9488]">Home</Link>
+          <Link to="/explore" className="text-gray-600 no-underline text-sm font-medium hover:text-[#0d9488]">Explore</Link>
+          <Link to="/leaderboard" className="text-gray-600 no-underline text-sm font-medium hover:text-[#0d9488]">Leaderboard</Link>
+          <Link to="/ai-center" className="text-gray-600 no-underline text-sm font-medium hover:text-[#0d9488]">AI Center</Link>
         </div>
 
         {user ? (
-          <div className="flex items-center gap-4 border-l border-white/10 pl-6">
+          <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
-              <p className="text-[10px] font-black uppercase text-[#008080] leading-none">{user.role}</p>
-              <p className="text-xs font-bold text-white">{user.name}</p>
+              <p className="text-[10px] font-bold uppercase text-[#0d9488] m-0 leading-none">{user.role || 'User'}</p>
+              <p className="text-xs font-bold text-black m-0">{user.name || 'User'}</p>
             </div>
             <button 
               onClick={handleLogout}
-              className="bg-white/5 hover:bg-red-500/20 text-red-500 px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all"
+              className="bg-red-50 text-red-600 border border-red-100 px-4 py-2 rounded-full text-xs font-bold cursor-pointer hover:bg-red-500 hover:text-white transition-all"
             >
               Logout
             </button>
           </div>
         ) : (
-          <Link to="/" className="bg-[#008080] px-6 py-2 rounded-xl text-xs font-bold hover:bg-[#00b3b3] transition-all">
-            Login
-          </Link>
+          <div className="flex items-center gap-4">
+            <span className="text-xs text-gray-500 hidden lg:block">Live community signals</span>
+            <Link to="/" className="bg-[#0d9488] text-white px-5 py-2 rounded-full text-xs font-bold no-underline hover:bg-[#0b7a6f] transition-all">
+              Join the platform
+            </Link>
+          </div>
         )}
       </div>
     </nav>

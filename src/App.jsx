@@ -10,8 +10,9 @@ import Profile from './pages/Profile';
 import Leaderboard from './pages/Leaderboard';
 import Notifications from './pages/Notifications';
 import RequestDetails from './pages/RequestDetails';
-import Navbar from './components/Navbar'; 
- function App() {
+import Navbar from './components/Navbar.jsx';
+
+function App() {
   return (
     <Router>
       <Navbar />
@@ -31,4 +32,5 @@ import Navbar from './components/Navbar';
     </Router>
   );
 }
+
 export default App;

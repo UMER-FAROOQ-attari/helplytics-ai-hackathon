@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const AuthPage = () => {
   const navigate = useNavigate();
+  
+  const [name, setName] = useState('Ayesha Khan');
+  const [role, setRole] = useState('Both');
+  const [email, setEmail] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault();
+    
+    const userData = {
+      name: name,
+      role: role,
+      email: email
+    };
+
+    localStorage.setItem('helplytics_user', JSON.stringify(userData));
     navigate('/landing'); 
   };
 
@@ -55,25 +67,40 @@ const AuthPage = () => {
             <form className="space-y-6" onSubmit={handleLogin}>
               <div>
                 <label className="block text-sm font-bold text-gray-600 mb-2">Select demo user</label>
-                <select className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl appearance-none outline-none">
-                  <option>Ayesha Khan</option>
-                  <option>Umer Farooq</option>
+                <select 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl appearance-none outline-none"
+                >
+                  <option value="Ayesha Khan">Ayesha Khan</option>
+                  <option value="Umer Farooq">Umer Farooq</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-bold text-gray-600 mb-2">Role selection</label>
-                <select className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl appearance-none outline-none">
-                  <option>Both</option>
-                  <option>Need Help</option>
-                  <option>Can Help</option>
+                <select 
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl appearance-none outline-none"
+                >
+                  <option value="Both">Both</option>
+                  <option value="Need Help">Need Help</option>
+                  <option value="Can Help">Can Help</option>
                 </select>
               </div>
 
               <div className="flex gap-4">
                 <div className="flex-1">
                   <label className="block text-sm font-bold text-gray-600 mb-2">Email</label>
-                  <input type="email" required placeholder="community@helphub.ai" className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none" />
+                  <input 
+                    type="email" 
+                    required 
+                    placeholder="community@helphub.ai" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none" 
+                  />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-bold text-gray-600 mb-2">Password</label>
